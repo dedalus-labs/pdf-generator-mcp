@@ -1,0 +1,139 @@
+# --- BUILD SYSTEM ---
+
+[build-system]
+requires = ["uv_build>=0.8.22,<0.9.0"]
+build-backend = "uv_build"
+
+# --- PROJECT CONFIGURATION ---
+
+[project]
+name = "pdf-generator-mcp"
+version = "0.1.0"
+description = "PDF Generator MCP server - create real PDF documents from markdown"
+readme = "README.md"
+requires-python = ">=3.10"
+license = { text = "MIT" }
+keywords = ["ai", "mcp", "agents", "dedalus", "pdf", "document", "generator"]
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Intended Audience :: Developers",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Topic :: Software Development :: Libraries :: Python Modules",
+    "Topic :: Scientific/Engineering :: Artificial Intelligence",
+    "Topic :: Office/Business",
+    "Typing :: Typed",
+]
+
+dependencies = [
+    "dedalus-mcp>=0.4.1",
+    "httpx>=0.27.0",
+    "reportlab>=4.0",
+    "markdown>=3.5",
+    "python-docx>=1.1.0",
+    "pydantic>=2.12.5",
+    "python-dotenv>=1.2.1",
+    "starlette>=0.40.0",
+    "uvicorn>=0.30.0",
+    "uvloop>=0.22.1; platform_system != 'Windows'",
+]
+
+# --- PROJECT URLS ---
+
+[project.urls]
+Homepage = "https://github.com/dedalus-labs/pdf-generator-mcp"
+Repository = "https://github.com/dedalus-labs/pdf-generator-mcp"
+
+# --- DEPENDENCY GROUPS ---
+
+[dependency-groups]
+runtime = [
+    "pydantic>=2.12.5",
+    "uvloop>=0.22.1; platform_system != 'Windows'",
+]
+
+test = [
+    "anyio>=4.11.0",
+    "pytest>=8.4.2",
+    "pytest-asyncio>=1.2.0",
+    "pytest-cov>=7.0.0",
+    "pytest-mock>=3.15.1",
+]
+
+lint = ["ruff>=0.13.3", "pre-commit>=4.3.0"]
+
+dev = [
+    { include-group = "runtime" },
+    { include-group = "test" },
+    { include-group = "lint" },
+]
+
+# --- UV CONFIGURATION ---
+
+[tool.uv]
+preview = true
+package = false
+default-groups = ["runtime"]
+cache-dir = ".cache/uv"
+compile-bytecode = true
+link-mode = "hardlink"
+environments = ["sys_platform == 'linux'", "sys_platform == 'darwin'"]
+concurrent-downloads = 50
+concurrent-builds = 4
+concurrent-installs = 4
+resolution = "highest"
+prerelease = "if-necessary"
+fork-strategy = "fewest"
+index-strategy = "first-index"
+python-preference = "managed"
+python-downloads = "automatic"
+
+# --- RUFF CONFIGURATION ---
+
+[tool.ruff]
+line-length = 120
+target-version = "py310"
+extend-exclude = ["build/", "dist/", ".venv/", "__pycache__/"]
+
+[tool.ruff.format]
+docstring-code-format = true
+docstring-code-line-length = 72
+skip-magic-trailing-comma = true
+quote-style = "double"
+indent-style = "space"
+
+[tool.ruff.lint]
+select = [
+    "E", "W", "F", "I", "UP", "B", "C4", "SIM", "RUF",
+    "D", "N", "ANN", "TCH", "S", "BLE", "TRY", "RSE", "RET",
+]
+
+ignore = [
+    "COM812", "E501", "ISC001", "E402", "TID252",
+    "D100", "D101", "D102", "D103", "D104", "D105", "D107",
+    "S101", "T201", "RET504",
+]
+
+[tool.ruff.lint.pydocstyle]
+convention = "google"
+
+[tool.ruff.lint.isort]
+known-first-party = ["src"]
+force-single-line = false
+force-sort-within-sections = true
+lines-after-imports = 2
+
+# --- PYTEST CONFIGURATION ---
+
+[tool.pytest.ini_options]
+asyncio_mode = "auto"
+asyncio_default_fixture_loop_scope = "function"
+testpaths = ["tests"]
+python_files = ["test_*.py", "*_test.py"]
+python_classes = ["Test*"]
+python_functions = ["test_*"]
+addopts = ["-v", "--color=yes"]
